@@ -11,11 +11,14 @@ public interface SellerDao {
 
 	public void update(Seller obj);
 
-	public void deleteById(Seller obj);
+	//public void update(Seller obj);
+	public void deleteById(Integer id);
 
 	Seller findById(Integer id);/* Retornando um Seller */
 
 	List<Seller> findAll();/* Retornar todos os departamentos tem que ser umalista */
 
 	List<Seller> findByDepartment(Department department);/* Buscar por Departamento */
+
+
 }
