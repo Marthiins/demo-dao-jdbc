@@ -31,11 +31,9 @@ public class SellerDaoJDBC implements SellerDao {
 		PreparedStatement st = null;
 		try { /* Montar o Statement */
 			st = conn.prepareStatement(
-					"INSERT INTO seller " 
-			+ "(Name, Email, BirthDate, BaseSalary, DepartmentId) " 
-			+ "VALUES "
-			+ "(?, ?, ?, ?, ?)", /* Esse set 1,2,3,4,5, são as ? */
-			Statement.RETURN_GENERATED_KEYS);
+					"INSERT INTO seller " + "(Name, Email, BirthDate, BaseSalary, DepartmentId) " + "VALUES "
+							+ "(?, ?, ?, ?, ?)", /* Esse set 1,2,3,4,5, são as ? */
+					Statement.RETURN_GENERATED_KEYS);
 
 			st.setString(1, obj.getName());/* Porqeu set string direto porque é o nome */
 			st.setString(2, obj.getEmail());
@@ -61,13 +59,34 @@ public class SellerDaoJDBC implements SellerDao {
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
 		} finally {
-			DB.closeConnection();
+			DB.closeStatement(st);
 		}
 	}
 
 	@Override
 	public void update(Seller obj) {
-		// TODO Auto-generated method stub
+		PreparedStatement st = null;
+		try { /* Montar o Statement */
+			st = conn.prepareStatement(
+					"UPDATE seller "
+					+ "SET Name = ?, Email = ?, BirthDate = ?, BaseSalary = ?, DepartmentId = ? " 
+					+ "WHERE Id = ?");
+
+			st.setString(1, obj.getName());/* Porqeu set string direto porque é o nome */
+			st.setString(2, obj.getEmail());
+			st.setDate(3, new java.sql.Date(obj.getBirthdate().getTime()));/* Instanciando a data SQL */
+			st.setDouble(4, obj.getBaseSalary());
+			st.setInt(5, obj.getDepartment().getId());/* Como chegar no departamento do id do vendedor */
+			st.setInt(6, obj.getId()); /* Id do vendedor */
+			
+			st.execute();
+
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeStatement(st);
+			DB.closeConnection();
+		}
 
 	}
 
@@ -84,8 +103,9 @@ public class SellerDaoJDBC implements SellerDao {
 		ResultSet rs = null;
 		try { /* Iniciando o PreparedStatement */
 			st = conn.prepareStatement(
-					"SELECT seller.*,department.Name as DepName " + "FROM seller INNER JOIN department "
-							+ "ON seller.DepartmentId = department.Id " + "WHERE seller.Id = ?");
+					"SELECT seller.*,department.Name as DepName " 
+			        + "FROM seller INNER JOIN department "
+					+ "ON seller.DepartmentId = department.Id " + "WHERE seller.Id = ?");
 
 			st.setInt(1, id);
 			rs = st.executeQuery();

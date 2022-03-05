@@ -36,9 +36,14 @@ public class Program {
 		}
 		System.out.println("\n===== TEST 4: seller insert=======");
 		Seller newSeller = new Seller(null, "Sérgio", "sergio@gmail.com", new Date(), 4000.0, department);
-sellerDao.insert(newSeller);/*Inserir no banco de dados*/
-	System.out.println("Inserted! New id = " + newSeller.getId());
-	
+		sellerDao.insert(newSeller);/* Inserir no banco de dados */
+		System.out.println("Inserted! New id = " + newSeller.getId());
+
+		System.out.println("\n===== TEST 4: seller insert=======");
+		seller = sellerDao.findById(1);/* Aproveitando a variavel seeler */
+		seller.setName("Martha Waine");
+		sellerDao.update(seller);
+		System.out.println("Update completo");
 	}
 
 }
